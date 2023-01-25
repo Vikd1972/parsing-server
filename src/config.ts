@@ -2,12 +2,12 @@
 
 const config = {
   postgresDb: {
-    host: 'host from the env',
-    port: Number('port from the env'),
-    user: 'user from the env',
-    password: 'password from the env',
-    database: 'database from the env',
-    logging: Boolean('logging from the env'),
+    host: '127.0.0.1',
+    port: 5432,
+    user: 'postgres',
+    password: 'postgres',
+    database: 'parsing',
+    logging: false,
   },
   port: 5001,
 };
