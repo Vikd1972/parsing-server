@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import path from 'path';
 
@@ -14,7 +15,7 @@ const dataSource = new DataSource({
   synchronize: false,
   subscribers: [],
   migrationsTableName: 'typeorm_migrations',
-  entities: [path.normalize(`${__dirname}/entities/**/*.{ts,js}`)],
+  entities: [path.normalize(`${__dirname}/entities/*.{ts,js}`)],
   migrations: [path.normalize(`${__dirname}/migrations/*.{ts,js}`)],
 });
 

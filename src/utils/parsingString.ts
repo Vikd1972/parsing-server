@@ -1,18 +1,25 @@
-const cheerio = require("cheerio");
+import addAlert from '../db/services/alerts';
 
-const parsingString = (res: any) => {
-  const $ = cheerio.load(res, null, false)
-  const tagVodaAlert = $("tbody tbody tr");
-  for (let i = 0; i < tagVodaAlert.length; i++) {
-    const data = $(tagVodaAlert[i]).find("td font font")[0],
-      dataNews = $(data).text();
-    const text = $(tagVodaAlert[i]).find("td font font")[1],
-      textNews = $(text).text();
-    const pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-    const dt = new Date(dataNews.replace(pattern, '$3-$2-$1'));
-    console.log(dt);
-    console.log(textNews);
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const cheerio = require('cheerio');
+
+const parsingString = async (res: string) => {
+  try {
+    const $ = cheerio.load(res, null, false);
+    const tagVodaAlert = $('tbody tbody tr');
+    for (let i = 0; i < tagVodaAlert.length; i++) {
+      const data = $(tagVodaAlert[i]).find('td font font')[0];
+      const date = $(data).text();
+      const text = $(tagVodaAlert[i]).find('td font font')[1];
+      const textNews = $(text).text() as string;
+      const pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+      const dateNews = new Date(date.replace(pattern, '$3-$2-$1'));
+      addAlert(dateNews, textNews);
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(error);
   }
-}
+};
 
 export default parsingString;
