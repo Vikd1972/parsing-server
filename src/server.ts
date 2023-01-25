@@ -1,8 +1,11 @@
 import express from 'express';
 
 import config from './config';
+import job from './utils/cron-ping';
 
 const app = express();
+
+job.start();
 
 void (async () => {
   try {
