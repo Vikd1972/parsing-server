@@ -7,7 +7,7 @@
   "main": "build/server.js",
   "scripts": {
     "postinstall": "husky install",
-    "start": "nodemon --watch 'src/**/*.ts' --exec \"ts-node\" src/server.ts",
+    "start": "nodemon --watch 'src/**/*.ts' --exec \"ts-node\" src/app.ts",
     "compile": "tsc -p tsconfig.build.json",
     "clean": "rm -rf build",
     "build": "npm run clean && npm run compile",
