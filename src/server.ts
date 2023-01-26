@@ -4,12 +4,14 @@ import express from 'express';
 import config from './config';
 import connectToDb from './db/connectToDb';
 
-import job from './utils/cron-ping';
+// import job from './utils/cron-ping';
+import getContent from './utils/getContent';
 
 const app = express();
 connectToDb();
 
-job.start();
+// job.start();
+getContent();
 
 (async () => {
   try {
