@@ -19,6 +19,7 @@ const config = {
     logging: Boolean(joinedEnv.POSTGRES_DB_LOGGING),
   },
   port: +joinedEnv.SERVER_PORT,
+  url: joinedEnv.URL_TO_PARSING,
 };
 
 export default config;

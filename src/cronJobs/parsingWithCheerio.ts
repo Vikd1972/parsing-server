@@ -1,7 +1,8 @@
 import nodeFetch from 'node-fetch';
 import { CronJob } from 'cron';
 
-import parsingString from '../utils/parsingString';
+import config from '../config';
+import cheerioController from '../controller/cheerio';
 
 let i = 0;
 
@@ -10,9 +11,9 @@ const parsingWithCheerio = new CronJob(
   (() => {
     (async () => {
       try {
-        const response = await nodeFetch('http://www.tgnvoda.ru/avarii.php');
+        const response = await nodeFetch(config.url);
         const html = await response.textConverted();
-        parsingString(html);
+        cheerioController(html);
         // eslint-disable-next-line no-console
         console.log('checking alerts with cheerio', i++);
       } catch (error) {

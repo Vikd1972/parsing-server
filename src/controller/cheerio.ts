@@ -1,9 +1,9 @@
-import addAlert from '../db/services/alerts';
+import alert from '../db/services/alerts';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const cheerio = require('cheerio');
 
-const parsingString = async (res: string) => {
+const cheerioController = async (res: string) => {
   try {
     const $ = cheerio.load(res, null, false);
     const tagVodaAlert = $('tbody tbody tr');
@@ -14,7 +14,7 @@ const parsingString = async (res: string) => {
       const textNews = $(text).text() as string;
       const pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
       const dateNews = new Date(date.replace(pattern, '$3-$2-$1'));
-      addAlert(dateNews, textNews);
+      alert.addAlert(dateNews, textNews);
     }
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -22,4 +22,4 @@ const parsingString = async (res: string) => {
   }
 };
 
-export default parsingString;
+export default cheerioController;
