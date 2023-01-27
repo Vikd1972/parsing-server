@@ -1,16 +1,19 @@
 import 'reflect-metadata';
-import connectToDb from './db/connectToDb';
-import parsingWithCheerio from './cronJobs/parsingWithCheerio';
-import parsingWithPuppeteer from './cronJobs/parsingWithPuppeteer';
 
+import './module';
+
+import connectToDb from './db/connectToDb';
+import runProcesses from './cronJobs';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const log = require('cllc')();
+
+log.info('start cron node process');
 (async () => {
   try {
-    // eslint-disable-next-line no-console
-    console.log('process run');
     await connectToDb();
-    parsingWithCheerio.start();
-    parsingWithPuppeteer.start();
+    runProcesses();
   } catch (error) {
-    console.error(error);
+    log.e(error);
   }
 })();

@@ -1,27 +1,24 @@
-// import nodeFetch from 'node-fetch';
 import { CronJob } from 'cron';
 
-// import config from '../config';
-// import cheerioController from '../controller/cheerio';
-// import puppetterController from 'src/controller/puppetter';
+import puppetterController from '../controller/puppetter';
+import config from '../config';
 
-let i = 0;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const log = require('cllc')();
 
 const parsingWithPuppeteer = new CronJob(
-  '0 */2 * * * *',
+  '0 */5 * * * *',
   (() => {
     (async () => {
       try {
-        // const response = await nodeFetch(config.url);
-        // const html = await response.textConverted();
-        // puppetterController(html);
-        // eslint-disable-next-line no-console
-        console.log('checking alerts with puppeteer', i++);
+        puppetterController(config.url);
+        log.step(0, 1);
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.log(error);
+        log.e(error);
       }
     })();
   }),
 );
+
 export default parsingWithPuppeteer;

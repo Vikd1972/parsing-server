@@ -1,10 +1,9 @@
 import puppeteer from 'puppeteer-core';
 import { executablePath } from 'puppeteer';
 
-import config from '../config';
-import alert from '../db/services/alerts';
+import { displayAlert } from '../db/services/alerts';
 
-const puppetterController = async () => {
+const puppetterController = async (url: string) => {
   const browser = await puppeteer.launch({
     ignoreDefaultArgs: ['--disable-extensions'],
     headless: true,
@@ -13,13 +12,9 @@ const puppetterController = async () => {
   });
 
   const page = await browser.newPage();
-
-  await page.goto(config.url);
-
+  await page.goto(url);
   const textSelector = await page.waitForSelector('tr');
-
   const fullTitle = await textSelector.evaluate((el) => el.textContent);
-
   const arrayOfAlert = fullTitle.trim().split('\n');
 
   let dateNews = new Date();
@@ -30,11 +25,10 @@ const puppetterController = async () => {
     dateNews = new Date(date.replace(pattern, '$3-$2-$1'));
 
     textNews = alert.slice(10).trim();
+    if (dateNews.getDay()) {
+      displayAlert(dateNews, textNews);
+    }
   });
-
-  if (dateNews.getDay()) {
-    alert.displayAlert(dateNews, textNews);
-  }
 
   browser.close();
 };
