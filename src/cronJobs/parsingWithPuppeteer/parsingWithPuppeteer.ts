@@ -1,9 +1,12 @@
 import puppeteer from 'puppeteer-core';
 import { executablePath } from 'puppeteer';
+import config from '../../config';
 
-import { displayAlert } from '../db/services/alerts';
+import { displayAlert } from '../../db/services/alerts';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const log = require('cllc')();
 
-const puppetterController = async (url: string) => {
+const parsingWithPuppeteer = async () => {
   const browser = await puppeteer.launch({
     ignoreDefaultArgs: ['--disable-extensions'],
     headless: true,
@@ -12,7 +15,7 @@ const puppetterController = async (url: string) => {
   });
 
   const page = await browser.newPage();
-  await page.goto(url);
+  await page.goto(config.url);
   const textSelector = await page.waitForSelector('tr');
   const fullTitle = await textSelector.evaluate((el) => el.textContent);
   const arrayOfAlert = fullTitle.trim().split('\n');
@@ -31,6 +34,7 @@ const puppetterController = async (url: string) => {
   });
 
   browser.close();
+  log.step(0, 1);
 };
 
-export default puppetterController;
+export default parsingWithPuppeteer;

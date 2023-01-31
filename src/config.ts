@@ -20,6 +20,7 @@ const config = {
   },
   port: +joinedEnv.SERVER_PORT,
   url: joinedEnv.URL_TO_PARSING,
+  runCronJobs: joinedEnv.SERVER_IS_CRON_JOBS_ENABLED,
 };
 
 export default config;
