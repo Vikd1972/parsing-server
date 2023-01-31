@@ -1,18 +1,14 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const log = require('cllc')();
-
-const test2 = () => {
-  log.step(0, 0, 0, 1);
-};
+// import parsingAvito from './parsingAvito';
+import Jobs from './parsingAvitoWithClass';
 
 export default {
-  cronTime: '*/3 * * * * *',
-  onTick: test2,
+  cronTime: '0 */15 * * * *',
+  onTick: Jobs.getJobs(),
   onComplete: undefined,
   startNow: false,
   timeZone: undefined,
   context: undefined,
-  runOnInit: false,
+  runOnInit: true,
   utcOffset: undefined,
   unrefTimeout: undefined,
 };

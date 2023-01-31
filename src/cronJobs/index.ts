@@ -30,8 +30,7 @@ const cronJobsList: Array<typeof itemCron> = [];
 Object.entries(modules).forEach((key) => {
   const itemCron = {
     name: key[0] as string,
-    // eslint-disable-next-line max-len
-    params: key[1].default ? key[1].default as CronJobParameters : key[1].index.default as CronJobParameters,
+    params: (key[1].default ? key[1].default : key[1].index.default) as CronJobParameters,
   };
   cronJobsList.push(itemCron);
 });
@@ -45,14 +44,6 @@ const runProcesses = () => {
       newJob.start();
     });
   }
-  // const runCronJobs = () => {
-
-  // };
-
-  // Object.entries(modules).forEach((xxx, job) => {
-  //   console.log(xxx, job);
-  //   // Object.values(job)[0].start();
-  // });
 };
 
 export default runProcesses;
