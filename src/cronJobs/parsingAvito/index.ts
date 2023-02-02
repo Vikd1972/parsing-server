@@ -1,4 +1,3 @@
-// import parsingAvito from './parsingAvito';
 import Jobs from './parsingAvitoWithClass';
 
 export default {
