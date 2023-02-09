@@ -1,5 +1,5 @@
 import Alerts from '../entities/alerts';
-import alerts from '..';
+import db from '..';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const log = require('cllc')();
@@ -9,7 +9,7 @@ export const addAlert = async (dateNews: Date, textNews: string) => {
   if ((today.getFullYear() === dateNews.getFullYear()) &&
     (today.getMonth() === dateNews.getMonth()) &&
     (today.getDate() === dateNews.getDate())) {
-    const todayNews = await alerts.findBy({ text: textNews });
+    const todayNews = await db.alerts.findBy({ text: textNews });
 
     if (!todayNews.length) {
       if (textNews.length) {
@@ -18,7 +18,7 @@ export const addAlert = async (dateNews: Date, textNews: string) => {
         newAlert.date = dateNews;
         newAlert.text = textNews;
 
-        await alerts.save(newAlert);
+        await db.alerts.save(newAlert);
       }
     }
   }
@@ -29,7 +29,7 @@ export const displayAlert = async (dateNews: Date, textNews: string) => {
   if ((today.getFullYear() === dateNews.getFullYear()) &&
     (today.getMonth() === dateNews.getMonth()) &&
     (today.getDate() === dateNews.getDate())) {
-    const todayNews = await alerts.findBy({ text: textNews });
+    const todayNews = await db.alerts.findBy({ text: textNews });
     if (!todayNews.length) {
       if (textNews.length) {
         log.info(dateNews);

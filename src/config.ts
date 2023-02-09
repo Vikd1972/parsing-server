@@ -19,8 +19,12 @@ const config = {
     logging: Boolean(joinedEnv.POSTGRES_DB_LOGGING),
   },
   port: +joinedEnv.SERVER_PORT,
-  url: joinedEnv.URL_TO_PARSING,
-  runCronJobs: joinedEnv.SERVER_IS_CRON_JOBS_ENABLED,
+  urlVodokanal: joinedEnv.URL_VODOKANAL,
+  urlAvito: joinedEnv.URL_AVITO,
+  urlAvitoNotes: joinedEnv.URL_AVITO_NOTES,
+  urlProxyServer: joinedEnv.URL_PROXY_SERVER,
+  isCronJobsRun: joinedEnv.SERVER_IS_CRON_JOBS_ENABLED,
+  numberOfStreams: +joinedEnv.NUMBER_OF_STREAMS,
 };
 
 export default config;

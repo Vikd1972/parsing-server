@@ -1,8 +1,10 @@
 import puppeteer from 'puppeteer-core';
 import { executablePath } from 'puppeteer';
-import config from '../../config';
+import dayjs from 'dayjs';
 
-import { displayAlert } from '../../db/services/alerts';
+import config from '../config';
+import { displayAlert } from '../db/services/alerts';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const log = require('cllc')();
 
@@ -15,17 +17,15 @@ const parsingWithPuppeteer = async () => {
   });
 
   const page = await browser.newPage();
-  await page.goto(config.url);
+  await page.goto(config.urlVodokanal);
   const textSelector = await page.waitForSelector('tr');
   const fullTitle = await textSelector.evaluate((el) => el.textContent);
   const arrayOfAlert = fullTitle.trim().split('\n');
 
-  let dateNews = new Date();
   let textNews = '';
   arrayOfAlert.forEach((alert) => {
     const date = alert.slice(0, 10);
-    const pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-    dateNews = new Date(date.replace(pattern, '$3-$2-$1'));
+    const dateNews = dayjs(date.replace(/\s+/g, ''), 'DD.MM.YYYY').toDate();
 
     textNews = alert.slice(10).trim();
     if (dateNews.getDay()) {
@@ -37,4 +37,15 @@ const parsingWithPuppeteer = async () => {
   log.step(0, 1);
 };
 
-export default parsingWithPuppeteer;
+export default {
+  cronTime: '0 */3 * * * *',
+  onTick: parsingWithPuppeteer,
+  // onTick: (() => console.log('parsingWithPuppeteer')),
+  startNow: false,
+  runOnInit: true,
+  onComplete: undefined,
+  timeZone: undefined,
+  context: undefined,
+  utcOffset: undefined,
+  unrefTimeout: undefined,
+};

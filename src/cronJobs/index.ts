@@ -8,42 +8,57 @@ import config from '../config';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const log = require('cllc')();
 
-type OptionsType = {
-  name: string;
-  default?: CronJobParameters;
-  index?: { default: CronJobParameters };
-};
+type CronJobParamsType = Omit<CronJobParameters, 'onTick'> & { onTick: () => Promise<void> };
+type CronFileType = { default: CronJobParamsType };
+type CronFolderType = { index: CronFileType };
+type ResultsType = CronFolderType | CronFileType;
 
-type ModulesType = RequireDirectoryResult<OptionsType>;
+const checkIsDirectory = (
+  fileOrDir: ResultsType,
+): fileOrDir is CronFolderType => Boolean((fileOrDir as CronFolderType).index);
+
+type ModulesType = RequireDirectoryResult<ResultsType>;
 
 const modules: ModulesType = requireDirectory(module, {
   extensions: [__filename.slice(-2)],
 });
 
-const itemCron: {
-  name: string;
-  params: CronJobParameters;
-} = { name: '', params: null };
+const cronJobsList = Object.entries(modules).map(([fileName, fileOrDir]: [string, ResultsType]) => {
+  const isDir = checkIsDirectory(fileOrDir);
 
-const cronJobsList: Array<typeof itemCron> = [];
+  if (isDir) {
+    return {
+      name: fileName,
+      params: fileOrDir.index.default,
+    };
+  }
 
-Object.entries(modules).forEach((key) => {
-  const itemCron = {
-    name: key[0] as string,
-    params: (key[1].default ? key[1].default : key[1].index.default) as CronJobParameters,
+  return {
+    name: fileName,
+    params: fileOrDir.default,
   };
-  cronJobsList.push(itemCron);
 });
 
 const runProcesses = () => {
-  if (config.runCronJobs) {
-    log.start('checking alerts with cheerio %s, checking alerts with puppeteer %s, checking test1 %s, , parsingAvito %s');
-    cronJobsList.forEach((job) => {
-      log.info(job.name, 'is running');
-      const newJob = new CronJob(job.params);
-      newJob.start();
-    });
+  if (!config.isCronJobsRun) {
+    return;
   }
+
+  cronJobsList.forEach((job) => {
+    // log.info(job.name, 'is running');
+    const newJob = new CronJob({
+      ...job.params,
+      onTick: async () => {
+        try {
+          log.warn('process', job.name, 'is run');
+          await job.params.onTick();
+        } catch (err) {
+          log.e(err);
+        }
+      },
+    });
+    newJob.start();
+  });
 };
 
 export default runProcesses;
