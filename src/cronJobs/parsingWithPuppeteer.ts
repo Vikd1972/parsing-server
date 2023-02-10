@@ -5,9 +5,6 @@ import dayjs from 'dayjs';
 import config from '../config';
 import { displayAlert } from '../db/services/alerts';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const log = require('cllc')();
-
 const parsingWithPuppeteer = async () => {
   const browser = await puppeteer.launch({
     ignoreDefaultArgs: ['--disable-extensions'],
@@ -34,7 +31,6 @@ const parsingWithPuppeteer = async () => {
   });
 
   browser.close();
-  log.step(0, 1);
 };
 
 export default {

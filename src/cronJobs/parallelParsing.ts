@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable no-await-in-loop */
 import type { Browser } from 'puppeteer-core';
@@ -5,9 +6,6 @@ import type { Browser } from 'puppeteer-core';
 import createBrowser from '../utils/createBrowser';
 import createPage from '../utils/createPage';
 import config from '../config';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const log = require('cllc')();
 
 const arrayOfLinks1 = [
   'https://avito.ru/business',
@@ -33,7 +31,9 @@ const searchUrls = async (browser: Browser) => {
       waitUntil: 'networkidle2',
       timeout: 0,
     });
-    log.info(`url ${link} has been verified`);
+    console.log('\u2554==================');
+    console.log('\u2551', '\x1b[36m', `url ${link} has been verified`, '\x1b[0m');
+    console.log('\u255A==================');
   }
   page.close();
 };
@@ -46,21 +46,13 @@ const streamsHandker = async () => {
   );
 
   const loadItem = (): Promise<void> => {
-    return new Promise(async (resolve) => {
-      await searchUrls(browser);
-      resolve();
-    });
+    return searchUrls(browser);
   };
 
-  const listOfInquiry = new Array(config.numberOfStreams);
+  const listOfInquiry = new Array(config.numberOfStreams).map(loadItem);
 
-  for (let i = 0; i < config.numberOfStreams; i++) {
-    listOfInquiry[i] = loadItem();
-  }
-
-  await Promise.all(listOfInquiry).then(async () => {
-    await browser.close();
-  });
+  await Promise.all(listOfInquiry);
+  browser.close();
 };
 
 export default {

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-loop-func */
 /* eslint-disable no-await-in-loop */
 import type { Browser } from 'puppeteer-core';
@@ -7,9 +8,6 @@ import searhLinks from './searchLinks';
 import config from '../../config';
 import createBrowser from '../../utils/createBrowser';
 import createPage from '../../utils/createPage';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const log = require('cllc')();
 
 const init = async (url: string) => {
   let browser: Browser;
@@ -35,7 +33,9 @@ const init = async (url: string) => {
 
       return { linksList, browser };
     } catch (error) {
-      log.error('error', error);
+      console.log('\u2554==================');
+      console.log('\u2551', '\x1b[31m', 'error', error, '\x1b[0m');
+      console.log('\u255A==================');
       attempt++;
       await browser.close();
     }
@@ -46,9 +46,13 @@ const parsingAvitoLinks = async () => {
   const { linksList, browser } = await init(config.urlAvito);
   let listOfLinks = linksList.filter((item) => item.isChecked === false);
   do {
-    log.warn('number of new array links', listOfLinks.length);
+    console.log('\u2554==================');
+    console.log('\u2551', '\x1b[33m', 'number of new array links', listOfLinks.length, '\x1b[0m');
+    console.log('\u255A==================');
     for (let item of listOfLinks) {
-      log.warn('check of', item.path);
+      console.log('\u2554==================');
+      console.log('\u2551', '\x1b[36m', 'check of', item.path, '\x1b[0m');
+      console.log('\u255A==================');
       await init(item.path);
       item = {
         ...item,

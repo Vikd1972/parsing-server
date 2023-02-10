@@ -1,10 +1,8 @@
+/* eslint-disable no-console */
 /* eslint-disable no-await-in-loop */
 import AvitoNotes from '../entities/avitoNotes';
 import AvitoLinks from '../entities/avitoLinks';
 import db from '..';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const log = require('cllc')();
 
 type NoteOptionsType = {
   title: string;
@@ -44,9 +42,10 @@ export const addAvitoNote = async (options: NoteOptionsType) => {
   newNote.description = options.description;
   newNote.date = options.date;
 
-  log.info('newNote', newNote);
+  console.log('\u2554==================');
+  console.log('\u2551', '\x1b[36m', newNote, '\x1b[0m');
+  console.log('\u255A==================');
   await db.avitoNotes.save(newNote);
-  log.step(0, 0, 0, 1);
 };
 
 export const addAvitoLink = async (options: LinkOptionsType) => {
@@ -70,9 +69,10 @@ export const addAvitoLink = async (options: LinkOptionsType) => {
   newLink.title = options.title;
   newLink.path = options.path;
 
-  log.info('newLink', newLink);
+  console.log('\u2554==================');
+  console.log('\u2551', '\x1b[36m', newLink, '\x1b[0m');
+  console.log('\u255A==================');
   await db.avitoLinks.save(newLink);
-  log.step(0, 0, 0, 1);
 };
 
 export const addAvitoLinks = async (options: LinksOptionsType) => {
@@ -81,9 +81,8 @@ export const addAvitoLinks = async (options: LinksOptionsType) => {
     newLink.title = item.title;
     newLink.path = item.path;
     newLink.isCheck = item.isCheck;
-    // log.info('newLink', newLink);
+
     await db.avitoLinks.save(newLink);
-    // log.step(0, 0, 0, 1);
   }
 };
 

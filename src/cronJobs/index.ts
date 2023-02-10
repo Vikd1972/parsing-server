@@ -1,12 +1,10 @@
+/* eslint-disable no-console */
 import requireDirectory from 'require-directory';
 import type { RequireDirectoryResult } from 'require-directory';
 import type { CronJobParameters } from 'cron';
 import { CronJob } from 'cron';
 
 import config from '../config';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const log = require('cllc')();
 
 type CronJobParamsType = Omit<CronJobParameters, 'onTick'> & { onTick: () => Promise<void> };
 type CronFileType = { default: CronJobParamsType };
@@ -50,10 +48,14 @@ const runProcesses = () => {
       ...job.params,
       onTick: async () => {
         try {
-          log.warn('process', job.name, 'is run');
+          console.log('\u2554==================');
+          console.log('\u2551', '\x1b[32m', 'process', job.name, 'is run', '\x1b[0m');
+          console.log('\u255A==================');
           await job.params.onTick();
         } catch (err) {
-          log.e(err);
+          console.log('\u2554==================');
+          console.log('\u2551', '\x1b[31m', err, '\x1b[0m');
+          console.log('\u255A==================');
         }
       },
     });

@@ -1,28 +1,30 @@
+/* eslint-disable no-console */
 import dataSource from './dataSource';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const log = require('cllc')();
 
 const connectToDb = async () => {
   try {
     const connection = await dataSource.initialize();
 
-    // eslint-disable-next-line no-console
-    log.info('DB connected');
+    console.log('\u2554==================');
+    console.log('\u2551', '\x1b[32m', 'DB connected', '\x1b[0m');
+    console.log('\u255A==================');
 
     process.on('SIGINT', async () => {
       if (!connection.isInitialized) {
         return;
       }
       await connection.destroy();
-      // eslint-disable-next-line no-console
-      console.log('DB connection is disconnected due to application termination');
+      console.log('\u2554==================');
+      console.log('\u2551', '\x1b[31m', 'DB connection is disconnected due to application termination', '\x1b[0m');
+      console.log('\u255A==================');
       process.exit(0);
     });
 
     return connection;
   } catch (err) {
-    console.error('DB connection error: ', err.message);
+    console.log('\u2554==================');
+    console.log('\u2551', '\x1b[31m', 'DB connection error: ', err.message, '\x1b[0m');
+    console.log('\u255A==================');
     process.exit(1);
   }
 };

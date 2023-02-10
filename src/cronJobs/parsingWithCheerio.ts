@@ -1,12 +1,10 @@
+/* eslint-disable no-console */
 import nodeFetch from 'node-fetch';
 import * as cheerio from 'cheerio';
 import dayjs from 'dayjs';
 
 import config from '../config';
 import alert from '../db/services/alerts';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const log = require('cllc')();
 
 const cheerioController = async () => {
   try {
@@ -22,10 +20,10 @@ const cheerioController = async () => {
       const dateNews = dayjs(date.replace(/\s+/g, ''), 'DD.MM.YYYY').toDate();
       alert.addAlert(dateNews, textNews);
     }
-    log.step();
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log(error);
+    console.log('\u2554==================');
+    console.log('\u2551', '\x1b[31m', error, '\x1b[0m');
+    console.log('\u255A==================');
   }
 };
 

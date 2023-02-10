@@ -1,8 +1,6 @@
+/* eslint-disable no-console */
 import Alerts from '../entities/alerts';
 import db from '..';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const log = require('cllc')();
 
 export const addAlert = async (dateNews: Date, textNews: string) => {
   const today = new Date();
@@ -32,8 +30,10 @@ export const displayAlert = async (dateNews: Date, textNews: string) => {
     const todayNews = await db.alerts.findBy({ text: textNews });
     if (!todayNews.length) {
       if (textNews.length) {
-        log.info(dateNews);
-        log.info(textNews);
+        console.log('\u2554==================');
+        console.log('\u2551', '\x1b[36m', dateNews, '\x1b[0m');
+        console.log('\u2551', '\x1b[36m', textNews, '\x1b[0m');
+        console.log('\u255A==================');
       }
     }
   }

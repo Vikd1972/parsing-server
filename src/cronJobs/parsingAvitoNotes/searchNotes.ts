@@ -1,18 +1,18 @@
+/* eslint-disable no-console */
 /* eslint-disable no-await-in-loop */
 import type { Page, Browser } from 'puppeteer-core';
 
 import avito from '../../db/services/avito';
 import userEmulator from '../../utils/userEmulator';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const log = require('cllc')();
-
 let numberOfPages: number;
 
 const searchNotes = async (page: Page, browser: Browser) => {
   const numbers = await page.$('[class^="page-title-count-"]');
   const numberOfAds = +await numbers.evaluate((el) => el.textContent);
-  log.debug('connected');
+  console.log('\u2554==================');
+  console.log('\u2551', '\x1b[31m', 'PROXY server connected', '\x1b[0m');
+  console.log('\u255A==================');
   numberOfPages = Math.ceil(numberOfAds / 50);
   let currentPage = 1;
 

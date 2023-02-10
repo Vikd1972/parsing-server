@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-loop-func */
 /* eslint-disable no-await-in-loop */
 import type { Browser } from 'puppeteer-core';
@@ -8,9 +9,6 @@ import searchNotes from './searchNotes';
 import createBrowser from '../../utils/createBrowser';
 import createPage from '../../utils/createPage';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const log = require('cllc')();
-
 let isErrorLoading: boolean;
 
 const init = async (proxy: string) => {
@@ -19,7 +17,9 @@ const init = async (proxy: string) => {
   do {
     try {
       isErrorLoading = false;
-      log.info('proxy', proxy, 'attempt', attempt, 'of 3');
+      console.log('\u2554==================');
+      console.log('\u2551', '\x1b[33m', 'proxy', proxy, 'attempt', attempt, 'of 3', '\x1b[0m');
+      console.log('\u255A==================');
 
       const browser = await createBrowser(
         [
@@ -36,18 +36,19 @@ const init = async (proxy: string) => {
         waitUntil: 'networkidle2',
         timeout: 0,
       }).catch(async (err) => {
-        log.error('answer.error', err);
+        console.log('\u2554==================');
+        console.log('\u2551', '\x1b[31m', 'answer.error', err, '\x1b[0m');
+        console.log('\u255A==================');
         await browser.close();
         throw new Error('TimeoutBrowser');
       });
 
-      // myBrowser = browser;
-      // log.debug('connected');
-
       await searchNotes(page, browser);
     } catch (error) {
       isErrorLoading = true;
-      log.error('proxy server is bad', error.message);
+      console.log('\u2554==================');
+      console.log('\u2551', '\x1b[31m', 'answer.error', 'proxy server is bad', error.message, '\x1b[0m');
+      console.log('\u255A==================');
       if (error.message === 'TimeoutBrowser') {
         attempt++;
       } else {
