@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import 'reflect-metadata';
 
 import './module';
@@ -5,15 +6,13 @@ import './module';
 import connectToDb from './db/connectToDb';
 import runProcesses from './cronJobs';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const log = require('cllc')();
-
-log.info('start cron node process');
 (async () => {
   try {
     await connectToDb();
     runProcesses();
   } catch (error) {
-    log.e(error);
+    console.log('\u2554==================');
+    console.log('\u2551', '\x1b[31m', error, '\x1b[0m');
+    console.log('\u255A==================');
   }
 })();

@@ -1,30 +1,23 @@
-/* eslint-disable no-console */
+import showMessage from '../utils/showMessage';
 import dataSource from './dataSource';
 
 const connectToDb = async () => {
   try {
     const connection = await dataSource.initialize();
-
-    console.log('\u2554==================');
-    console.log('\u2551', '\x1b[32m', 'DB connected', '\x1b[0m');
-    console.log('\u255A==================');
+    showMessage('SUCCESS', 'initiating the database', 'DB connected');
 
     process.on('SIGINT', async () => {
       if (!connection.isInitialized) {
         return;
       }
       await connection.destroy();
-      console.log('\u2554==================');
-      console.log('\u2551', '\x1b[31m', 'DB connection is disconnected due to application termination', '\x1b[0m');
-      console.log('\u255A==================');
+      showMessage('ERROR', 'initiating the database', 'DB connection is disconnected due to application termination');
       process.exit(0);
     });
 
     return connection;
   } catch (err) {
-    console.log('\u2554==================');
-    console.log('\u2551', '\x1b[31m', 'DB connection error: ', err.message, '\x1b[0m');
-    console.log('\u255A==================');
+    showMessage('ERROR', 'initiating the database', `DB connection error: ${err.message}`);
     process.exit(1);
   }
 };

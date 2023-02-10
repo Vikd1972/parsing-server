@@ -1,8 +1,8 @@
-/* eslint-disable no-console */
 /* eslint-disable no-await-in-loop */
 import AvitoNotes from '../entities/avitoNotes';
 import AvitoLinks from '../entities/avitoLinks';
 import db from '..';
+import showMessage from '../../utils/showMessage';
 
 type NoteOptionsType = {
   title: string;
@@ -42,9 +42,7 @@ export const addAvitoNote = async (options: NoteOptionsType) => {
   newNote.description = options.description;
   newNote.date = options.date;
 
-  console.log('\u2554==================');
-  console.log('\u2551', '\x1b[36m', newNote, '\x1b[0m');
-  console.log('\u255A==================');
+  showMessage('INFO', 'db.services.avito', `${newNote}`);
   await db.avitoNotes.save(newNote);
 };
 
@@ -69,9 +67,7 @@ export const addAvitoLink = async (options: LinkOptionsType) => {
   newLink.title = options.title;
   newLink.path = options.path;
 
-  console.log('\u2554==================');
-  console.log('\u2551', '\x1b[36m', newLink, '\x1b[0m');
-  console.log('\u255A==================');
+  showMessage('INFO', 'db.services.avito', `${newLink}`);
   await db.avitoLinks.save(newLink);
 };
 

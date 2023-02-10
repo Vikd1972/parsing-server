@@ -1,10 +1,10 @@
-/* eslint-disable no-console */
 import nodeFetch from 'node-fetch';
 import * as cheerio from 'cheerio';
 import dayjs from 'dayjs';
 
 import config from '../config';
 import alert from '../db/services/alerts';
+import showMessage from '../utils/showMessage';
 
 const cheerioController = async () => {
   try {
@@ -17,13 +17,12 @@ const cheerioController = async () => {
       const [data, text] = $(tagVodaAlert[i]).find('td font font');
       const date = $(data).text();
       const textNews = $(text).text().trim();
-      const dateNews = dayjs(date.replace(/\s+/g, ''), 'DD.MM.YYYY').toDate();
+      const dateFormat = dayjs(date.replace(/\s+/g, ''), 'DD.MM.YYYY').format('DD.MM.YYYY');
+      const dateNews = dayjs(dateFormat, 'DD.MM.YYYY').toDate();
       alert.addAlert(dateNews, textNews);
     }
   } catch (error) {
-    console.log('\u2554==================');
-    console.log('\u2551', '\x1b[31m', error, '\x1b[0m');
-    console.log('\u255A==================');
+    showMessage('ERROR', 'parsingWithCheerio', `${error}`);
   }
 };
 

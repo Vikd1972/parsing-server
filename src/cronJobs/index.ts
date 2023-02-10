@@ -1,10 +1,10 @@
-/* eslint-disable no-console */
 import requireDirectory from 'require-directory';
 import type { RequireDirectoryResult } from 'require-directory';
 import type { CronJobParameters } from 'cron';
 import { CronJob } from 'cron';
 
 import config from '../config';
+import showMessage from '../utils/showMessage';
 
 type CronJobParamsType = Omit<CronJobParameters, 'onTick'> & { onTick: () => Promise<void> };
 type CronFileType = { default: CronJobParamsType };
@@ -43,19 +43,14 @@ const runProcesses = () => {
   }
 
   cronJobsList.forEach((job) => {
-    // log.info(job.name, 'is running');
     const newJob = new CronJob({
       ...job.params,
       onTick: async () => {
         try {
-          console.log('\u2554==================');
-          console.log('\u2551', '\x1b[32m', 'process', job.name, 'is run', '\x1b[0m');
-          console.log('\u255A==================');
+          showMessage('INFO', job.name, `process ${job.name} is run`);
           await job.params.onTick();
         } catch (err) {
-          console.log('\u2554==================');
-          console.log('\u2551', '\x1b[31m', err, '\x1b[0m');
-          console.log('\u255A==================');
+          showMessage('ERROR', job.name, `${err}`);
         }
       },
     });

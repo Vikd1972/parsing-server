@@ -1,11 +1,12 @@
-/* eslint-disable no-console */
 /* eslint-disable no-async-promise-executor */
+/* eslint-disable no-console */
 /* eslint-disable no-await-in-loop */
 import type { Browser } from 'puppeteer-core';
 
 import createBrowser from '../utils/createBrowser';
 import createPage from '../utils/createPage';
 import config from '../config';
+import showMessage from '../utils/showMessage';
 
 const arrayOfLinks1 = [
   'https://avito.ru/business',
@@ -31,9 +32,7 @@ const searchUrls = async (browser: Browser) => {
       waitUntil: 'networkidle2',
       timeout: 0,
     });
-    console.log('\u2554==================');
-    console.log('\u2551', '\x1b[36m', `url ${link} has been verified`, '\x1b[0m');
-    console.log('\u255A==================');
+    showMessage('SUCCESS', 'parallelParsing', `url ${link} has been verified`);
   }
   page.close();
 };
@@ -44,21 +43,23 @@ const streamsHandker = async () => {
       '--use-gl=egl',
     ],
   );
-
   const loadItem = (): Promise<void> => {
     return searchUrls(browser);
   };
 
-  const listOfInquiry = new Array(config.numberOfStreams).map(loadItem);
+  const listOfInquiry = new Array(config.numberOfStreams); // .map(loadItem);
 
+  for (let i = 0; i < listOfInquiry.length; i++) {
+    listOfInquiry[i] = loadItem();
+  }
   await Promise.all(listOfInquiry);
-  browser.close();
+  await browser.close();
 };
 
 export default {
   cronTime: '0 */20 * * * *',
   onTick: streamsHandker,
-  // onTick: (() => console.log('parallelParsing')),
+  // onTick: (() => console.log('streamsHandker')),
   onComplete: undefined,
   startNow: false,
   timeZone: undefined,

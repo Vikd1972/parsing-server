@@ -1,28 +1,25 @@
-import puppeteer from 'puppeteer-core';
-import { executablePath } from 'puppeteer';
 import dayjs from 'dayjs';
 
 import config from '../config';
+import createPuppeteerPage from '../utils/createPuppeteerPage';
 import { displayAlert } from '../db/services/alerts';
 
 const parsingWithPuppeteer = async () => {
-  const browser = await puppeteer.launch({
-    ignoreDefaultArgs: ['--disable-extensions'],
-    headless: true,
-    args: ['--use-gl=egl'],
-    executablePath: executablePath(),
-  });
+  const { browser, page } = await createPuppeteerPage([
+    '--use-gl=egl',
+    '--shm-size=1gb',
+    '--enable-blink-features=HTMLImports',
+  ]);
 
-  const page = await browser.newPage();
   await page.goto(config.urlVodokanal);
   const textSelector = await page.waitForSelector('tr');
   const fullTitle = await textSelector.evaluate((el) => el.textContent);
   const arrayOfAlert = fullTitle.trim().split('\n');
-
   let textNews = '';
   arrayOfAlert.forEach((alert) => {
     const date = alert.slice(0, 10);
-    const dateNews = dayjs(date.replace(/\s+/g, ''), 'DD.MM.YYYY').toDate();
+    const dateFormat = dayjs(date.replace(/\s+/g, ''), 'DD.MM.YYYY').format('DD.MM.YYYY');
+    const dateNews = dayjs(dateFormat, 'DD.MM.YYYY').toDate();
 
     textNews = alert.slice(10).trim();
     if (dateNews.getDay()) {
@@ -30,7 +27,7 @@ const parsingWithPuppeteer = async () => {
     }
   });
 
-  browser.close();
+  await browser.close();
 };
 
 export default {

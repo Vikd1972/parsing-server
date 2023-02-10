@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable no-loop-func */
 /* eslint-disable no-await-in-loop */
 import type { Browser } from 'puppeteer-core';
@@ -8,6 +7,7 @@ import proxyService from '../../utils/proxyService';
 import searchNotes from './searchNotes';
 import createBrowser from '../../utils/createBrowser';
 import createPage from '../../utils/createPage';
+import showMessage from '../../utils/showMessage';
 
 let isErrorLoading: boolean;
 
@@ -17,10 +17,7 @@ const init = async (proxy: string) => {
   do {
     try {
       isErrorLoading = false;
-      console.log('\u2554==================');
-      console.log('\u2551', '\x1b[33m', 'proxy', proxy, 'attempt', attempt, 'of 3', '\x1b[0m');
-      console.log('\u255A==================');
-
+      showMessage('WARN', 'parsingAvitoNotes', `proxy ${proxy} attempt ${attempt} of 3`);
       const browser = await createBrowser(
         [
           '--use-gl=egl',
@@ -35,10 +32,7 @@ const init = async (proxy: string) => {
       await page.goto(config.urlAvitoNotes, {
         waitUntil: 'networkidle2',
         timeout: 0,
-      }).catch(async (err) => {
-        console.log('\u2554==================');
-        console.log('\u2551', '\x1b[31m', 'answer.error', err, '\x1b[0m');
-        console.log('\u255A==================');
+      }).catch(async () => {
         await browser.close();
         throw new Error('TimeoutBrowser');
       });
@@ -46,9 +40,7 @@ const init = async (proxy: string) => {
       await searchNotes(page, browser);
     } catch (error) {
       isErrorLoading = true;
-      console.log('\u2554==================');
-      console.log('\u2551', '\x1b[31m', 'answer.error', 'proxy server is bad', error.message, '\x1b[0m');
-      console.log('\u255A==================');
+      showMessage('ERROR', 'parsingAvitoNotes', `proxy server is bad - net::ERR_TIMED_OUT at ${config.urlAvitoNotes}`);
       if (error.message === 'TimeoutBrowser') {
         attempt++;
       } else {
