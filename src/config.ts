@@ -23,6 +23,7 @@ const config = {
   urlAvito: joinedEnv.URL_AVITO,
   urlAvitoNotes: joinedEnv.URL_AVITO_NOTES,
   urlProxyServer: joinedEnv.URL_PROXY_SERVER,
+  urlProxyServer2: joinedEnv.URL_PROXY_SERVER2,
   isCronJobsRun: joinedEnv.SERVER_IS_CRON_JOBS_ENABLED,
   numberOfStreams: +joinedEnv.NUMBER_OF_STREAMS,
 };

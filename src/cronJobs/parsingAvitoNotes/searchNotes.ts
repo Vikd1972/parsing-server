@@ -10,7 +10,7 @@ let numberOfPages: number;
 const searchNotes = async (page: Page, browser: Browser) => {
   const numbers = await page.$('[class^="page-title-count-"]');
   const numberOfAds = +await numbers.evaluate((el) => el.textContent);
-  showMessage('ERROR', 'searhNotes', 'PROXY server connected');
+  showMessage('SUCCESS', 'searhNotes', 'PROXY server connected');
   numberOfPages = Math.ceil(numberOfAds / 50);
   let currentPage = 1;
 
@@ -18,6 +18,7 @@ const searchNotes = async (page: Page, browser: Browser) => {
     if (currentPage > 1) {
       await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
     }
+    showMessage('TRACE', 'searchNotes', page.url());
     const notes = await page.$$('[class^="iva-item-body-"]');
     const notesArr = Array.from(notes);
 

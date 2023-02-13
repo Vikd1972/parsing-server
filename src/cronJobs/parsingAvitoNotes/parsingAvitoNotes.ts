@@ -3,22 +3,21 @@
 import type { Browser } from 'puppeteer-core';
 
 import config from '../../config';
-import proxyService from '../../utils/proxyService';
+import runProxy from '../../utils/runProxy';
 import searchNotes from './searchNotes';
-import createBrowser from '../../utils/createBrowser';
-import createPage from '../../utils/createPage';
+import createPuppeteerPage from '../../utils/createPuppeteerPage';
 import showMessage from '../../utils/showMessage';
 
 let isErrorLoading: boolean;
 
-const init = async (proxy: string) => {
+const runSearch = async (proxy: string) => {
   let browser: Browser;
   let attempt = 1;
   do {
     try {
       isErrorLoading = false;
       showMessage('WARN', 'parsingAvitoNotes', `proxy ${proxy} attempt ${attempt} of 3`);
-      const browser = await createBrowser(
+      const { browser, page } = await createPuppeteerPage(
         [
           '--use-gl=egl',
           '--shm-size=1gb',
@@ -26,8 +25,6 @@ const init = async (proxy: string) => {
           `--proxy-server=${proxy}`,
         ],
       );
-
-      const page = await createPage(browser);
 
       await page.goto(config.urlAvitoNotes, {
         waitUntil: 'networkidle2',
@@ -40,29 +37,16 @@ const init = async (proxy: string) => {
       await searchNotes(page, browser);
     } catch (error) {
       isErrorLoading = true;
-      showMessage('ERROR', 'parsingAvitoNotes', `proxy server is bad - net::ERR_TIMED_OUT at ${config.urlAvitoNotes}`);
-      if (error.message === 'TimeoutBrowser') {
-        attempt++;
-      } else {
-        return;
-      }
+      showMessage('ERROR', 'parsingAvitoNotes', error.message);
+      attempt++;
     }
   } while (attempt <= 3 && isErrorLoading);
-
-  return browser;
+  await browser.close();
+  return isErrorLoading;
 };
 
 const parsingAvitoNotes = async () => {
-  const proxyArr = await proxyService.getList();
-  let browser: Browser;
-  for (let i = 0; i < proxyArr.length; i++) {
-    const proxy = `${proxyArr[i].url}:${proxyArr[i].port}`;
-    browser = await init(proxy);
-    if (!isErrorLoading) {
-      break;
-    }
-  }
-  await browser.close();
+  await runProxy(runSearch);
 };
 
 export default parsingAvitoNotes;

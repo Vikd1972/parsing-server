@@ -1,5 +1,4 @@
 /* eslint-disable no-async-promise-executor */
-/* eslint-disable no-console */
 /* eslint-disable no-await-in-loop */
 import type { Browser } from 'puppeteer-core';
 
@@ -34,7 +33,7 @@ const searchUrls = async (browser: Browser) => {
     });
     showMessage('SUCCESS', 'parallelParsing', `url ${link} has been verified`);
   }
-  page.close();
+  await page.close();
 };
 
 const streamsHandker = async () => {
@@ -43,16 +42,18 @@ const streamsHandker = async () => {
       '--use-gl=egl',
     ],
   );
+
   const loadItem = (): Promise<void> => {
     return searchUrls(browser);
   };
 
-  const listOfInquiry = new Array(config.numberOfStreams); // .map(loadItem);
+  const listOfInquiry = new Array(config.numberOfStreams);
 
   for (let i = 0; i < listOfInquiry.length; i++) {
     listOfInquiry[i] = loadItem();
   }
   await Promise.all(listOfInquiry);
+
   await browser.close();
 };
 

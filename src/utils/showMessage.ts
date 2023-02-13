@@ -1,15 +1,15 @@
 /* eslint-disable no-console */
 const showMessage = (type: string, proccess: string, message: string) => {
   const arrayOfColors = {
-    ERROR: '\x1b[31m',
-    SUCCESS: '\x1b[32m',
-    WARN: '\x1b[33m',
-    INFO: '\x1b[36m',
+    ERROR: '\x1b[31m', // red
+    SUCCESS: '\x1b[32m', // green
+    WARN: '\x1b[33m', // yellow
+    INFO: '\x1b[36m', // cyan
+    TRACE: '\x1b[90m', // grey
     black: '\x1b[30m',
     blue: '\x1b[34m',
     magenta: '\x1b[35m',
     white: '\x1b[37m',
-    gray: '\x1b[90m',
   };
 
   const colorMessage = Object.entries(arrayOfColors).filter((item) => item[0] === type)[0][1];

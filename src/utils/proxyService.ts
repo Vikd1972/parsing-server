@@ -14,7 +14,7 @@ class ProxyService {
 
   private pendingPromise: Promise<void> = null;
 
-  private pullList = async () => {
+  private pullList1 = async () => {
     if (!this.pendingPromise) {
       this.pendingPromise = (async () => {
         const browser = await puppeteer.launch({
@@ -55,9 +55,45 @@ class ProxyService {
     return this.pendingPromise;
   };
 
+  private pullList2 = async () => {
+    if (!this.pendingPromise) {
+      this.pendingPromise = (async () => {
+        const browser = await puppeteer.launch({
+          ignoreDefaultArgs: ['--disable-extensions'],
+          headless: true,
+          args: ['--use-gl=egl'],
+          executablePath: executablePath(),
+        });
+
+        const page = await browser.newPage();
+        page.setDefaultNavigationTimeout(0);
+        await page.goto(config.urlProxyServer2);
+        const table = await page.$('[id="table_proxies"]');
+        const proxiList = await table.$$('tr');
+        const proxyArr = Array.from(proxiList);
+
+        for (const proxy of proxyArr) {
+          const stringOfProxy = await proxy.evaluate((el) => el.textContent);
+          const arrayOfProxy = stringOfProxy.split('\n').map((item) => item.trim());
+          if (parseInt(arrayOfProxy[3], 10)) {
+            this.list.push({
+              url: arrayOfProxy[2],
+              port: arrayOfProxy[3],
+            });
+          }
+        }
+
+        this.isPulled = true;
+        this.pendingPromise = null;
+        await browser.close();
+      })();
+    }
+    return this.pendingPromise;
+  };
+
   getList = async () => {
     if (!this.isPulled) {
-      await this.pullList();
+      await this.pullList2();
     }
     return this.list;
   };
